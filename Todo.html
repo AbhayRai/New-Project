@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO</title>
+    <style>
+        #head {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h3,h1 {
+            color: rgb(78, 78, 240);
+            font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+            padding: 5px;
+        }
+
+        input {
+            height: 35px;
+            font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+        }
+
+        #btn {
+            background-color: blue;
+            color: white;
+            outline: none;
+            border: none;
+            padding: 4px;
+            border-radius: 2px;
+            letter-spacing: 2px;
+            width: 100px;
+            height: 35px;
+            font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+        }
+
+        #container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            height: 30px;
+            margin: 15px;
+            background-color: red;
+            outline: none;
+            border: none;
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+        }
+
+        #card {
+            height: 200px;
+            width: 200px;
+            background-color: #212121;
+            border-radius: 23px;
+            margin: 10px;
+            font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+        }
+
+        #card-head {
+            height: 50%;
+            background-color: blue;
+            border-radius: 23px 23px 0 0;
+            padding: 15px;
+            color: white;
+
+        }
+
+        #card-body {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #content {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="head">
+        <div id="main">
+            <h1>TODO</h1>
+            <div>
+                <input type="text" placeholder="Enter your msg...." id="text" />
+                <input type="submit" value="ADD" id="btn" />
+            </div>
+        </div>
+        <hr />
+        <div id="container">
+            <h3 >Total Count : - <span id="count"></span> </h3>
+            <button id="clear">CLEAR ALL</button>
+        </div>
+        <hr />
+        <div id="content">
+            <!-- <div id="card">
+                <div id="card-head"></div>
+                <div id="card-body">
+                    <button>EDIT</button>
+                    <button>DELETE</button>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <script>
+        let btn = document.getElementById("btn");
+        let text = document.getElementById("text");
+        let clear = document.getElementById("clear");
+        let template = document.getElementById("content");
+        btn.addEventListener("click", add);
+        let isEdit = '';
+        let gArr = [];
+        get()
+        printCard()
+        //Adding card
+        function add(id) {
+            if (isEdit) {               // Edit card
+
+                let newArr = gArr.map((item) => {
+                    if (item.id == isEdit.id) {
+                        let obj = { id: item.id, input: text.value }
+                        return obj
+                    }
+                    else {
+                        return item
+                    }
+                })
+                gArr = newArr;
+                set(gArr)
+                console.log(gArr)
+                isEdit = '';
+                printCard()
+                text.value = ''
+
+                btn.value = 'ADD'
+
+
+            } else {
+                text1 = text.value;
+
+                if (!text1) {
+                    alert("Enter the Task");
+                } else {
+                    let id = Math.trunc(Math.random() * 1000);
+                    gArr.unshift({ id: `${id}`, input: `${text1}` });
+                    console.log(gArr);
+                    console.log(text1);
+                    printCard();
+                }
+                text.value = "";
+
+            }
+            set(gArr);
+
+
+        }
+
+        //Card Print 
+        // btn.addEventListener('click',printCard)
+        function printCard() {
+            let count = document.getElementById('count')
+            let content1 = "";
+            TodoLength = gArr.length;
+            // console.log('Now Print Card')
+            if (gArr.length == 0) {
+                content1+=`<h3 style="text-align:center width:50vw"> No DATA </h3>`
+            } else {
+                gArr.forEach((item, i, a) => {
+                    // console.log(item.input)
+                    content1 += `<div id="card">
+                <div id="card-head">${item.input}</div>
+                <div id="card-body">
+                    <button id="edit" onclick="editHandler(${item.id})">EDIT</button>
+                    <button id="delete" onclick="deleteHandler(${item.id})">DELETE</button>
+                </div>
+            </div>`;
+                });
+
+            }
+            template.innerHTML = content1;
+            console.log(TodoLength)
+            count.innerHTML = `${TodoLength}`;
+
+        }
+        //Clear All button
+        clear.addEventListener("click", () => {
+            gArr = [];
+            localStorage.clear()
+            printCard();
+            console.log(gArr);
+            console.log("CLear Array");
+        });
+        //Delete the card
+        function deleteHandler(id) {
+            console.log(id)
+            gArr = gArr.filter((item) => {
+                if (item.id != id)
+                    return item
+            })
+            console.log(gArr)
+            set(gArr)
+            printCard()
+            text.value = "";
+        }
+        //Edit Card
+        function editHandler(id) {
+            btn.value = "Update"
+            isEdit = gArr.find((item) => {
+                return item.id == id
+
+            })
+            text.value = isEdit.input;
+
+        }
+
+        //Set storage function
+        function set(arr)
+        {
+            console.log('setting')
+            localStorage.setItem('todo',JSON.stringify(arr))
+        }
+
+        //Get storage function
+        function get()
+        {
+            gArr=((localStorage.getItem('todo'))?JSON.parse(localStorage.getItem('todo')):[])
+            
+        }
+    </script>
+</body>
+
+</html>
