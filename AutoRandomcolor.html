@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto Random Color Changer</title>
+    <style>
+        /* *
+        {
+            background-color: yellow;
+        } */
+        #colorBox {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+        }
+
+        .Box {
+            width: 200px;
+            height: 200px;
+            background-color: black;
+            margin: 20px;
+        }
+
+        button {
+            color: white;
+            border: 1px solid white;
+            border-radius: 10px;
+            background-color: purple;
+            /* background-color: rgb(rgb(214, 101, 101), green, blue); */
+            width: 120px;
+            height: 40px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <button id="start">Random Color</button>
+        <button id="end">Stop Me !!</button>
+        <div id="colorBox">
+            <div id="box-1" class="Box"></div>
+            <div id="box-2" class="Box"></div>
+            <div id="box-3" class="Box"></div>
+            <div id="box-4" class="Box"></div>
+            <div id="box-5" class="Box"></div>
+            <div id="box-6" class="Box"></div>
+        </div>
+    </div>
+
+    <script>
+        let start = document.getElementById("start");
+        let end = document.getElementById("end");
+        let random = document.getElementById("colorBox");
+        let box = document.getElementsByClassName("Box");
+
+        // console.log(random.children)
+        let arr = Array.from(random.children);
+        let x = 0;
+        let count = 0;
+        let id = 0;
+        // console.log(arr)
+        start.addEventListener("click", auto);
+        function auto() {                         // Add Random color
+            start.innerText = "Random Color"
+            end.innerText = "Stop Me !!"
+            id = setInterval(() => {
+                // while (count < arr.length) {
+                if (count > 5) {
+                    let boxArr = Array.from(box);
+                    boxArr.forEach((item) => {
+                        item.style.backgroundColor = "black";
+                    });
+
+                    count = 0;
+                }
+                // let singleValue = arr.reduce((a, item, i, arr) => {
+                //     //Return Single value each time
+                //     console.log(count);
+
+                //     return arr[count];
+                // });
+                let singleValue = arr[count]
+                count++;
+                let red = Math.trunc(Math.random() * 255);
+                let green = Math.trunc(Math.random() * 255);
+                let blue = Math.trunc(Math.random() * 255);
+
+                singleValue.style.backgroundColor = `rgb(${red},${green},${blue}`;
+                document.body.style.backgroundColor = `rgb(${green},${red},${blue}`;
+                start.style.backgroundColor = `rgb(${green},${red},${blue}`;
+                end.style.backgroundColor = `rgb(${green},${red},${blue}`;
+                // console.log(id)
+
+                // }
+            }, 100);
+
+            //   console.log(singleValue.style.backgroundColor='Red')
+        }
+        end.addEventListener("click", () => {
+            //stop the setInterval
+            clearInterval(id);
+            start.innerText = "Start Again"
+            end.innerText = "Wohho!!"
+        });
+    </script>
+</body>
+
+</html>
