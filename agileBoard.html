@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agile Board</title>
+    <style>
+        * {
+            margin: 0px;
+            text-align: center;
+            font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+        }
+
+        #container {
+            display: flex;
+            color: white;
+            justify-content: center;
+        }
+        span
+        {
+            width: 300px;
+            
+        }
+        h1
+        {
+            letter-spacing: 2px;
+        }
+
+        .first {
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
+            background-color: yellow;
+            padding: 10px;
+            border-radius: 5px;
+            color: black;
+            font-size: 20px;
+        }
+
+        #one, #two,#three{
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
+           justify-content: center;
+           padding: 20px;
+        }
+/* 
+        #two {
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
+            
+            padding: 10px;
+        }
+
+        #three {
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
+            
+            padding: 10px;
+        } */
+
+        #card {
+            width: 150px;
+            height: 100px;
+            background-color:white;
+            display: flex;
+            flex-direction: column;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+        #cardHead {
+            width: 100%;
+            height: 50%;
+            position: relative;
+            top: 10px;
+            font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+        }
+
+        #cardBody {
+            display: flex;
+            justify-content: center;
+            margin: 5px;
+        }
+
+        button {
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Agile Board</h1>
+        <input type="text" id="input" placeholder="Enter the Task" />
+        <button id="btn">Add</button>
+    </div>
+    <div id="container">
+        <span class="first">Step 1
+            <hr>
+            <div id="one"></div>
+        </span>
+        <span class="first">Step 2
+            <hr>
+            <div id="two"></div>
+        </span>
+        <span class="first">Step 3
+            <hr>
+            <div id="three"></div>
+        </span>
+    </div>
+
+    <script>
+        let input = document.getElementById("input");
+        let btn = document.getElementById("btn");
+        let listOne = document.getElementById("one");
+        let listTwo = document.getElementById("two");
+        let listThree = document.getElementById("three");
+        let previous = document.getElementById("previous");
+        let next = document.getElementById("next");
+        let arr1 = [];
+        let arr2 = [];
+        let arr3 = [];
+
+        let count = 0;
+
+        btn.addEventListener("click", () => {
+            let obj = {};
+            obj.id = Math.trunc(Math.random() * 1000);
+            obj.task = input.value;
+            console.log(obj);
+            arr1.unshift(obj);
+            // console.log(arr1);
+            cardPrint(arr1);
+
+            input.value = "";
+        });
+        function cardPrint(arr) {
+            let template = "";
+
+            arr.forEach((item) => {
+                console.log(item.task);
+                if (arr == arr1) {
+                    template += `<div id="card">
+            <div id="cardHead">
+                ${item.task}
+            </div>
+            <div id="cardBody">
+                <button id="next" onclick='nextTable(${item.id})'>Next</button>
+            </div>
+        </div>`;
+                } else if (arr == arr3) {
+                    template += `<div id="card">
+            <div id="cardHead">
+                ${item.task}
+            </div>
+            <div id="cardBody">
+                <button id="previuos" onclick='previousTable(${item.id})'>Previuos</button>
+            </div>
+        </div>`;
+                } else {
+                    template += `<div id="card">
+            <div id="cardHead">
+                ${item.task}
+            </div>
+            <div id="cardBody">
+                <button id="previuos" onclick='previousTable(${item.id})'>Previuos</button>
+                <button id="next" onclick='nextTable(${item.id})'>Next</button>
+            </div>
+        </div>`;
+                }
+
+
+            });
+            // console.log(arr1)
+            if (arr == arr1) {
+                listOne.innerHTML = template;
+            } else if (arr == arr2) {
+                console.log(listTwo);
+                listTwo.innerHTML = template;
+            } else if (arr == arr3) {
+                listThree.innerHTML = template;
+            }
+        }
+
+        function nextTable(id) {
+            console.log(id);
+            let nextElement = arr1.find((item) => {
+                return item.id == id;
+            });
+            console.log(nextElement)
+            if (nextElement) {
+                arr1 = arr1.filter((item) => {
+                    return item.id != id;
+                });
+
+                arr2.push(nextElement);
+                console.log(arr1);
+                console.log(arr2);
+                cardPrint(arr2);
+                cardPrint(arr1);
+            }
+            else {
+
+                nextElementtwo = arr2.find((item) => {
+                    return item.id == id;
+                })
+                arr3.push(nextElementtwo)
+                arr2 = arr2.filter((item) => {
+                    return item.id != id
+                })
+                console.log(arr2)
+                console.log(arr3)
+                cardPrint(arr2)
+                cardPrint(arr3)
+            }
+
+        }
+        function previousTable(id) {
+            console.log(id);
+            let previousElement = arr2.find((item) => {
+                return item.id == id;
+            });
+            if (previousElement) {
+                arr2 = arr2.filter((item) => {
+                    return item.id != id;
+                });
+                arr1.push(previousElement);
+                console.log(arr2);
+                console.log(arr1);
+                cardPrint(arr2);
+                cardPrint(arr1);
+            } else {
+                previousElementthree = arr3.find((item) => {
+                    return item.id == id;
+                })
+                arr2.push(previousElementthree)
+                arr3 = arr3.filter((item) => {
+                    return item.id != id;
+                })
+                cardPrint(arr2)
+                cardPrint(arr3)
+            }
+
+        }
+    </script>
+</body>
+
+</html>
